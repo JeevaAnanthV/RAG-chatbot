@@ -79,3 +79,60 @@ def chat(chat_history, vectordb):
             with st.chat_message("AI" if isinstance(message, AIMessage) else "Human"):
                 st.write(message.content)
     return chat_history
+
+from langchain_google_genai import ChatGoogleGenerativeAI
+import os
+
+def get_text_response(user_input):
+    """
+    Generate a response for a text-based input query directly using LLM.
+
+    Parameters:
+    - user_input (str): The text input from the user
+
+    Returns:
+    - response: The generated response from LLM
+    """
+    # Load environment variables (gets API keys for the models)
+    load_dotenv()
+
+    vectordb = st.session_state.vectordb
+    if vectordb is None:
+        return "Vector database is not available."
+    
+    response = vectordb.query(user_input)
+    return response if response else "No relevant information found."
+
+
+    # Initialize the model with system message conversion to human message
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-1.5-pro", 
+        temperature=0,
+        convert_system_message_to_human=True
+    )
+    
+    # Create messages
+    messages = [
+        ("human", user_input)
+    ]
+    
+    # Debugging: Print the type and content of the messages
+    print(f"Messages type: {type(messages)}")
+    print(f"First message type: {type(messages[0])}")
+    
+    try:
+        # Generate a response
+        response = llm.invoke(messages)
+    except Exception as e:
+        print(f"Error during LLM generation: {e}")
+        return "An error occurred while generating the response."
+
+    # Debugging: Print the response structure
+    print(f"Response: {response}")
+    
+    # Extract and return the text from the response
+    try:
+        # Ensure the response structure matches expectations
+        return response.content
+    except AttributeError:
+        return "An unexpected response format was received."
