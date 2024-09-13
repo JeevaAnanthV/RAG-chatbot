@@ -1,11 +1,13 @@
 import streamlit as st
 import os
-import pandas
+# import pandas
 from utils.video_processing import process_video, save_processed_video_data
 from utils.prepare_vectordb import get_vectorstore
 from utils.session_state import initialize_session_state_variables
 from utils.chatbot import chat
 from utils.web_scraper import scrape_website
+import pytesseract
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 class ChatApp:
     def __init__(self):
