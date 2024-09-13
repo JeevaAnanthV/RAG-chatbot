@@ -28,32 +28,32 @@ Response Generation: Relevant chunks and the query are passed to the LLM (Google
 Chat Continuation: As new data is added or more questions are asked, the system dynamically updates, providing a seamless user experience.
 App Usage
 Step-by-Step Instructions
-Step 1: Create .env File
-Clone this repository or download the files as a ZIP and extract them.
+### Step 1: Create .env file
+Copy this repo or download the files as a zip and extract it. Navigate to the folder where the files README and requirements are located. You will see the app folder too. Create a new txt file and paste this:
 
-Navigate to the folder where the files README.md and requirements.txt are located. You will see the app folder as well.
+```shell
+GOOGLE_API_KEY = "apikey"
+```
 
-Create a new text file and add the following content:
+Now, paste the API key that you generated into the quotation marks. It should look something like this: GOOGLE_API_KEY = "AIzaSyCJOZtTkyN9rfuXEjTtngeubYTUne"
 
-plaintext
-Copy code
-GOOGLE_API_KEY = "your_api_key"
-Replace "your_api_key" with the actual API key you obtained from Google. Save this file as .env in the root folder of the project.
+Save the file as an environment file, with .env as the name. To do this, when saving the file, click on Type and choose "Unknown(*.). Make sure that the name of the file is .env
 
-Step 2: Install Required Packages
-Open a terminal in the project folder. You can do this by holding the Shift key and right-clicking in the folder, then selecting "Open Terminal."
+When the file is saved, you should see a file named .env with type "Environment File" in the folder, together with the README and requirements files
 
-Run the following command to install all the necessary dependencies:
+### Step 2: Install Packages
+Open a terminal in this folder. You can do this by holding the shift key on the keyboard and right-clicking on the screen. An option to open a terminal should appear. In the terminal, write this to install all the requirements for the app:
 
-bash
-Copy code
+```shell
 pip install -r requirements.txt
-Step 3: Run the App
-In the same terminal, run the following command to start the app:
+```
 
-bash
-Copy code
+### Step 3: Run the app
+In this same terminal, run this command to startup the app:
+
+```shell
 streamlit run app/app.py
+```
 A new window in your web browser should open automatically with the app ready to use.
 
 To stop the app, simply press Ctrl + C in the terminal.
