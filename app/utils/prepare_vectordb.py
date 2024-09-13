@@ -4,7 +4,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from dotenv import load_dotenv
 import os
-
+import os
 def extract_pdf_text(pdfs):
     """
     Extract text from PDF documents

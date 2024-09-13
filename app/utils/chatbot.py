@@ -6,7 +6,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from dotenv import load_dotenv
-
+import os
 def get_context_retriever_chain(vectordb):
     """
     Create a context retriever chain for generating responses based on the chat history and vector database

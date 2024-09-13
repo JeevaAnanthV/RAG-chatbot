@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import pandas
 from utils.video_processing import process_video, save_processed_video_data
 from utils.prepare_vectordb import get_vectorstore
 from utils.session_state import initialize_session_state_variables

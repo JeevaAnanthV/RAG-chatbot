@@ -3,7 +3,7 @@ import speech_recognition as sr
 from moviepy.editor import VideoFileClip
 import tempfile
 import os
-
+import os
 # Set the path to the tesseract executable
 pytesseract.pytesseract.tesseract_cmd = r'"C:\Program Files\Tesseract-OCR\tesseract.exe"'
 

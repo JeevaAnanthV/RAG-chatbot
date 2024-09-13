@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 from utils.prepare_vectordb import get_vectorstore
-
+import os
 def save_docs_to_vectordb(pdf_docs, upload_docs):
     # Filter is the file is a new one or not. If it is, the button to process will appear
     new_files = [pdf for pdf in pdf_docs if pdf.name not in upload_docs]

@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import os
 def scrape_website(url):
     """
     Scrape the content of a website.
