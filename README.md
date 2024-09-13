@@ -1,64 +1,98 @@
 # RAG - ChatBot: Retrieval Augmented Generation (RAG) chatbot using Google's Gemini-Pro model, Langchain, ChromaDB, and Streamlit
+RAG - ChatBot: Retrieval Augmented Generation (RAG) Chatbot
+Overview
+The RAG-ChatBot is a Python-based application that allows users to chat with multiple PDF documents, scraped web content, or extracted video transcriptions. Users can ask questions in natural language, and the application provides relevant responses based on the content of the uploaded or scraped documents. This application utilizes Google's Gemini-Pro model, Langchain, ChromaDB, and Streamlit to generate accurate answers, ensuring responses are based solely on the provided content.
 
-This RAG-ChatBot is a Python application that allows the user to chat with multiple PDF documents. You ask questions in natural language, in the same way as if you were to ask a human, and the application will provide relevant responses based on the content of the uploaded documents. This app uses Google's Gemini-Pro model to generate accurate answers to your questions, but the model will only answer questions that are about the uploaded documents.
-Here are some key points about the project:
-- Upload Documents: When the app is launched, you can upload a PDF document and chat with the document on the fly, no need to reload the app
-- Offline Documents: If you need to leave the app, when you come back, you won't need to upload the same document again, you can chat with it as soon as the app starts. Also, you can keep uploading documents to chat with all of them at the same time
-- The user interface was crafted with streamlit, with the goal of displaying all necessary information while being extremely simple. The user only has the "upload" button, all the rest is automated by the app
-- The model incorporates the chat history, retaining up to 10 users questions and model responses, so if you ask about something and want more details, you can just say "give me more details about that" and the model will know what you are reffering to
-- For each response, you can check the source in the sidebar, making sure that the model is not making up responses
+Key Features
+Upload Documents: Upload PDF documents and interact with their content on the fly. No need to reload the app when adding new documents.
+Offline Documents: Previously uploaded documents are retained, allowing users to chat with them immediately upon restarting the app.
+Website Scraping: Users can provide URLs to scrape websites and interact with the extracted content.
+Video Processing: Supports video uploads, processes the video to extract text (shown on the video) and transcribe speech. The extracted data is then stored for querying.
+User-Friendly Interface: Crafted with Streamlit, the app has an intuitive interface where users can upload files or URLs and ask questions without needing complex configurations.
+Chat History Retention: Retains up to 10 user questions and model responses, providing context for follow-up questions.
+Source Verification: For each response, users can check the source of the information in the sidebar, ensuring transparency.
+Persistent Vector Database: Uses ChromaDB to store vector embeddings, making future queries faster and more efficient.
+How It Works
+Project Schema
+The app works by combining a Retriever component with a Generator component:
 
-## RAG - ChatBot Interface: First Boot and In Usage
-The very first time the user launches the app, this will be the screen of the app. Note that the user cannot send any messages, since there are no documents uploaded.
+Upload PDF/URL/Video: Users can upload documents, provide URLs for web scraping, or upload video files.
+Text Extraction and Processing:
+PDFs: Extracts text and processes it.
+URLs: Scrapes website content and processes the text.
+Videos: Extracts text shown in the video and transcribes speech.
+Text Chunking: Extracted text is chunked using RecursiveCharacterTextSplitter.
+Embedding and Saving: Converts chunks to vectors using GoogleGenerativeAIEmbeddings and saves them in ChromaDB.
+Similarity Matching: User queries are converted to vectors, and similarity searches are performed to find the most relevant chunks.
+Response Generation: Relevant chunks and the query are passed to the LLM (Google's Gemini-Pro model) to generate responses.
+Chat Continuation: As new data is added or more questions are asked, the system dynamically updates, providing a seamless user experience.
+App Usage
+Step-by-Step Instructions
+Step 1: Create .env File
+Clone this repository or download the files as a ZIP and extract them.
 
-![user_interface](Images/user_interface.png)
+Navigate to the folder where the files README.md and requirements.txt are located. You will see the app folder as well.
 
-The next time that the user launches the app, the chat box will be available and there will be a list of the uploaded documents. If the user tries to upload the same document again, the "process" button will not appear. When the user asks a question, the model will give a response based on the question, the content that was retrieved from the database, and the chat history. In the image below, we can see that the model is aware of the chat history, and that the source of the answer is displayed in the sidebar.
+Create a new text file and add the following content:
 
-![app_in_use](Images/app_in_use.png)
+plaintext
+Copy code
+GOOGLE_API_KEY = "your_api_key"
+Replace "your_api_key" with the actual API key you obtained from Google. Save this file as .env in the root folder of the project.
 
-## How it Works
+Step 2: Install Required Packages
+Open a terminal in the project folder. You can do this by holding the Shift key and right-clicking in the folder, then selecting "Open Terminal."
 
-![project_schema](Images/project_schema.png)
+Run the following command to install all the necessary dependencies:
 
-The main functionality of the app is the loop on the right side of the image. The user asks a question, the app searches for the best response in the database, and the content retrieved from the database is passed to the Large Language Model (LLM), which generates a response based on the question, chat history and content from the database. Here's a more detailed step-by-step of what happens:
-1. Upload PDF: If it's the very first time the app is launched, the user will need to upload a document to chat with. The app checks for a folder called "docs", and creates one if it doesn't exist. All PDF documents will be saved into this folder
-2. Text Chunking: The app extracts the text from the PDF and separates it into chunks of text, with the size being measured by the limit of tokens the embedding model can handle per chunk
-3. Embedding and Saving: These chunks of text pass through an embedding model, that generates vector representations of n dimensions of each text chunk. After that, all vectors are stored in a vector database. In this app, ChromaDB is being used, so that the vectordb is stored in disk, and the app creates a folder called "Vector_DB - Documents", to be the base folder of the database
-4. Similarity Matching: When you ask a question, it is appended to the chat history. Also, the text that you used goes through the same embedding model that the chunks did, creating a vector representation of your question. With this, the app compares it with the text chunks and identifies the most semantically similar ones. It does this by using a distance metric, like the cosine similarity, which measures how close the angles between the vectors are. The closer the angles, the higher the similarity between the vectors
-5. Response Generation: The selected chunks are passed to the language model, which generates a response based on the relevant content of the PDFs, the user question and the chat history. When the LLM outputs the answer, it is appended to the chat history, so the model can use this to have context of the conversation itself, and not only of the documents, since the chat history is composed of users questions and the models answers
-
-When the app gets initialized and there's already processed documents, steps 1-3 are skipped, and the user can automatically chat with these already processed PDFs. The option to upload a PDF is always available, so when the user does upload a new file, the app does steps 1-3 while a "processing" message appears in the sidebar, and the vector database gets updated with the new document. This way, there's no need for a "manual" mode, where the user can only upload a new file, making the usage of the app easier. 
-
-## App Usage
-To install and use the app, an API key from Google will be needed. For this, you can click [here](https://aistudio.google.com/app/apikey). Accept the terms, and if the option to create an API key is not selectable, just reload the page. Click on "Create API Key" and then click on "Create API key in new project" and copy the key. It's recommended to paste the key into a new txt file or something, so you have easy access.
-Also, to use the app, it's assumed that you have python installed
-
-### Step 1: Create .env file
-Copy this repo or download the files as a zip and extract it. Navigate to the folder where the files README and requirements are located. You will see the app folder too. Create a new txt file and paste this: 
-
-```shell
-GOOGLE_API_KEY = "apikey"
-```
-
-Now, paste the API key that you generated into the quotation marks. It should look something like this: GOOGLE_API_KEY = "AIzaSyCJOZtTkyN9rfuXEjTtngeubYTUne"
-
-Save the file as an environment file, with .env as the name. To do this, when saving the file, click on Type and choose "Unknown(*.). Make sure that the name of the file is .env
-
-When the file is saved, you should see a file named .env with type "Environment File" in the folder, together with the README and requirements files
-
-### Step 2: Install Packages
-Open a terminal in this folder. You can do this by holding the shift key on the keyboard and right-clicking on the screen. An option to open a terminal should appear. In the terminal, write this to install all the requirements for the app:
-
-```shell
+bash
+Copy code
 pip install -r requirements.txt
-```
+Step 3: Run the App
+In the same terminal, run the following command to start the app:
 
-### Step 3: Run the app
-In this same terminal, run this command to startup the app:
-
-```shell
+bash
+Copy code
 streamlit run app/app.py
-```
+A new window in your web browser should open automatically with the app ready to use.
 
-A new window on your web browser should automatically appear, with the app ready to be used. To stop the app, simply press CTR+C on the terminal. A message of "stopping" will appear, and the app will shutdown
+To stop the app, simply press Ctrl + C in the terminal.
+
+Detailed Functionalities
+1. PDF Upload and Interaction
+Upload PDF documents to chat with their content.
+The app checks for a folder named docs and creates one if it doesn't exist. All PDFs are saved in this folder.
+Extracted text is chunked and embedded using GoogleGenerativeAIEmbeddings before being stored in ChromaDB.
+2. Web Scraping
+Input a URL to scrape content from a website.
+Scraped text is processed, chunked, embedded, and stored similarly to PDF documents.
+The vector database (ChromaDB) is updated with the new content, allowing users to query the scraped data.
+3. Video Processing
+Upload video files for processing.
+Extracts text displayed on the video and transcribes any spoken words.
+The extracted and transcribed data is embedded and stored in ChromaDB for querying.
+4. Chat History and Contextual Responses
+Maintains up to 10 previous questions and answers to provide context for follow-up questions.
+Responses are generated based on the user query, retrieved text chunks, and chat history.
+5. Response Source Verification
+Users can view the source of each response in the sidebar to ensure the answer is grounded in the uploaded documents, scraped data, or processed video content.
+Repository Structure
+app/: Contains the main application code.
+app.py: Main Streamlit application file.
+docs/: Stores uploaded PDF documents.
+scraped_data/: Stores scraped website data.
+video_data/: Stores extracted and transcribed video data.
+Vector_DB - Documents/: Stores the vector database for PDF, scraped data, and video content.
+requirements.txt: List of dependencies to be installed.
+README.md: Project overview and setup guide (this file).
+Contribution
+Feel free to fork this repository and submit pull requests. We welcome all contributions that improve the app, add new features, or fix bugs.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for more information.
+
+Acknowledgments
+Google Generative AI for their powerful embedding and LLM models.
+Langchain for the integration and retrieval functionalities.
+Streamlit for providing an intuitive web interface framework.
+ChromaDB for its efficient vector database storage and retrieval capabilities.

@@ -51,7 +51,7 @@ def get_vectorstore(pdfs, scraped_text=None, from_session_state=False):
     embedding = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     
     # Set the correct path for the vectorstore directory
-    persist_directory = r'C:\Users\priya\Documents\chatbot3\RAG-chatbot\Vector_DB - Documents'
+    persist_directory = r'L:\test4\RAG-chatbot\Vector_DB - Documents'
     
     if not os.path.exists(persist_directory):
         os.makedirs(persist_directory)  # Ensure the directory is created
